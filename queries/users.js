@@ -1,4 +1,5 @@
 const db = require('../db/dbConfig')
+const bcrypt = require('bcrypt')
 
 // for development purposes only
 const getUsers = async () => {
@@ -19,4 +20,17 @@ const getUser = async (id) => {
     }
 }
 
-module.exports = { getUsers, getUser }
+const createUser = async (user) => {
+    try {
+        const { name, password_hash, email, phone_number, profile_picture_url } = user
+        const salt = 10
+        const hash = await bcrypt.hash(password_hash, salt)
+        const profilePic = profile_picture_url ? profile_picture_url : '/static/default_profile_pic.webp'
+        const newUser = await db.one("INSERT INTO users (name, password_hash, email, phone_number, profile_picture_url) VALUES ($1, $2, $3, $4, $5) RETURNING *", [name, hash, email, phone_number, profilePic])
+        return newUser
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getUsers, getUser, createUser }

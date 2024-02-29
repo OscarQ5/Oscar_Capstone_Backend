@@ -14,3 +14,11 @@ CREATE TABLE users (
     profile_picture_url VARCHAR(255) DEFAULT '/static/default_profile_pic.webp',
     is_admin BOOLEAN DEFAULT FALSE
 );
+
+CREATE TABLE contacts (
+    contact_id SERIAL PRIMARY KEY,
+    firstname VARCHAR(255) NOT NULL,
+    lastname  VARCHAR(255) NOT NULL,
+    phone_number VARCHAR NOT NULL,
+   user_id INT REFERENCES users(user_id) ON DELETE CASCADE
+)

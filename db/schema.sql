@@ -19,6 +19,7 @@ CREATE TABLE contacts (
     contact_id SERIAL PRIMARY KEY,
     firstname VARCHAR(255) NOT NULL,
     lastname  VARCHAR(255) NOT NULL,
-    phone_number VARCHAR NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE
-)
+);
+

@@ -23,3 +23,15 @@ CREATE TABLE contacts (
    user_id INT REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+
+CREATE TABLE medical (
+    medical_id SERIAL PRIMARY KEY,
+    medical_history VARCHAR(255) NOT NULL,
+    blood_type  VARCHAR(255) NOT NULL,
+    allergies VARCHAR(225) NOT NULL,
+    medication VARCHAR(255),
+   user_id INT REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+
+

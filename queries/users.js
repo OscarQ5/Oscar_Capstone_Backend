@@ -45,4 +45,17 @@ const logInUser = async (user) => {
     }
 }
 
-module.exports = { getUsers, getUser, createUser, logInUser }
+const updateUser = async (id, updatedUser) => {
+    try {
+        const { name, password_hash, email, phone_number, profile_picture_url } = updatedUser
+        const salt = 10
+        const hash = await bcrypt.hash(password_hash, salt)
+        const profilePic = profile_picture_url ? profile_picture_url : '/static/default_profile_pic.webp'
+        const updated = await db.none("UPDATE users SET name=$1, password_hash=$2, email=$3, phone_number=$4, profile_picture_url=$5 WHERE user_id=$6 RETURNING *", [name, hash, email, phone_number, profilePic, id])
+        return updated
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getUsers, getUser, createUser, logInUser, updateUser }

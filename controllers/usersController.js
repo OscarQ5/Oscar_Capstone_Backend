@@ -3,7 +3,7 @@ const users = express.Router()
 require("dotenv").config()
 const jwt = require('jsonwebtoken')
 const secret = process.env.SECRET
-const { getUsers, getUser, createUser, logInUser, updateUser } = require('../queries/users')
+const { getUsers, getUser, createUser, logInUser, updateUser, deleteUser } = require('../queries/users')
 
 users.get('/', async (req, res) => {
     try {
@@ -66,6 +66,16 @@ users.put('/:id', async (req, res) => {
         res.status(200).json({ message: "User updated successfully" });
     } catch (err) {
         res.status(500).json({ error: "Error updating user" });
+    }
+})
+
+users.delete('/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        await deleteUser(id)
+        res.status(200).json({ message: "User deleted successfully" })
+    } catch (err) {
+        res.status(404).json({ error: err })
     }
 })
 

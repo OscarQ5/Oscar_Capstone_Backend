@@ -20,9 +20,8 @@ CREATE TABLE contacts (
     firstname VARCHAR(255) NOT NULL,
     lastname  VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
-   user_id INT REFERENCES users(user_id) ON DELETE CASCADE
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE medical (
     medical_id SERIAL PRIMARY KEY,
@@ -30,8 +29,6 @@ CREATE TABLE medical (
     blood_type  VARCHAR(255) NOT NULL,
     allergies VARCHAR(225) NOT NULL,
     medication VARCHAR(255),
-   user_id INT REFERENCES users(user_id) ON DELETE CASCADE
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
-

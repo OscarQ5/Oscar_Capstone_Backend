@@ -10,7 +10,6 @@ INSERT INTO contacts (firstname, lastname, phone_number) VALUES
 ('Joe', 'Jackson', '973-654-3310');
 
 
-
 INSERT INTO medical (medical_history , blood_type, allergies, medication) VALUES
 ('Renal Failure', 'O+', 'none', 'crestor'),
 ('Heart Failure', 'A+', 'peanuts and lactose', 'albuterol'),

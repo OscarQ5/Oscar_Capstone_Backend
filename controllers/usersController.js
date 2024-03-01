@@ -4,6 +4,8 @@ require("dotenv").config()
 const jwt = require('jsonwebtoken')
 const secret = process.env.SECRET
 const { getUsers, getUser, createUser, logInUser, updateUser, deleteUser } = require('../queries/users')
+const contactsController = require('./contactsController')
+users.use('/:user_id/contacts', contactsController)
 
 users.get('/', async (req, res) => {
     try {

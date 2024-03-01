@@ -9,4 +9,13 @@ const getContacts = async (user_id) => {
     }
 }
 
-module.exports = { getContacts }
+const getContactById = async (contact_id) => {
+    try {
+        const contact = await db.one("SELECT * FROM contacts WHERE contact_id=$1", contact_id)
+        return contact
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getContacts, getContactById }

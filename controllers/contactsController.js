@@ -1,6 +1,6 @@
 const express = require('express')
-const contacts = express.Router({ mergeParams: true})
-const { getContacts, getContactById } = require('../queries/contacts')
+const contacts = express.Router({ mergeParams: true })
+const { getContacts, getContactById, createContact } = require('../queries/contacts')
 
 contacts.get('/', async (req, res) => {
     const { user_id } = req.params
@@ -19,6 +19,17 @@ contacts.get('/:id', async (req, res) => {
         res.status(200).json(contact)
     } catch (err) {
         res.status(404).json({ error: "Contact not found" })
+    }
+})
+
+contacts.post('/', async (req, res) => {
+    const { firstname, lastname, phone_number } = req.body
+    const { user_id } = req.params
+    try {
+        const newContact = await createContact({ firstname, lastname, phone_number, user_id })
+        res.status(201).json(newContact)
+    } catch (err) {
+        res.status(404).json({ error: err })
     }
 })
 

@@ -18,4 +18,15 @@ const getContactById = async (contact_id) => {
     }
 }
 
-module.exports = { getContacts, getContactById }
+const createContact = async (contact) => {
+    const { firstname, lastname, phone_number, user_id } = contact
+    try {
+        const newContact = await db.one("INSERT INTO contacts (firstname, lastname, phone_number, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
+            [firstname, lastname, phone_number, user_id])
+        return newContact
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getContacts, getContactById, createContact }

@@ -26,7 +26,7 @@ users.get('/:id', async (req, res) => {
     }
 })
 
-users.post('/', async (req, res) => {
+users.post('/sign-up', async (req, res) => {
     try {
         const newUser = await createUser(req.body)
         const token = jwt.sign({ user_id: newUser.user_id, name: newUser.name }, secret)

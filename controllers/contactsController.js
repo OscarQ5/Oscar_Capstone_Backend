@@ -1,6 +1,6 @@
 const express = require('express')
 const contacts = express.Router({ mergeParams: true })
-const { getContacts, getContactById, createContact, updateContact } = require('../queries/contacts')
+const { getContacts, getContactById, createContact, updateContact, deleteContact } = require('../queries/contacts')
 
 contacts.get('/', async (req, res) => {
     const { user_id } = req.params
@@ -39,6 +39,16 @@ contacts.put('/:id', async (req, res) => {
     try {
         await updateContact(id, { firstname, lastname, phone_number })
         res.status(200).json({ message: "Contact updated successfully" })
+    } catch (err) {
+        res.status(404).json({ error: err })
+    }
+})
+
+contacts.delete('/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        await deleteContact(id)
+        res.status(200).json({ message: "Contact deleted successfully" })
     } catch (err) {
         res.status(404).json({ error: err })
     }

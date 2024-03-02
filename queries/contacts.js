@@ -29,15 +29,23 @@ const createContact = async (contact) => {
     }
 }
 
-const updateContact = async (contactId, updatedContact) => {
+const updateContact = async (contact_id, updatedContact) => {
     const { firstname, lastname, phone_number } = updatedContact
     try {
         const updated = await db.none("UPDATE contacts SET firstname=$1, lastname=$2, phone_number=$3 WHERE contact_id=$4",
-            [firstname, lastname, phone_number, contactId])
+            [firstname, lastname, phone_number, contact_id])
         return updated
     } catch (err) {
         return err
     }
 }
 
-module.exports = { getContacts, getContactById, createContact, updateContact }
+const deleteContact = async (contact_id) => {
+    try {
+        await db.none("DELETE FROM contacts WHERE contact_id=$1", contact_id)
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getContacts, getContactById, createContact, updateContact, deleteContact }

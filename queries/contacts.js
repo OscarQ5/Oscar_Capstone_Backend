@@ -29,4 +29,15 @@ const createContact = async (contact) => {
     }
 }
 
-module.exports = { getContacts, getContactById, createContact }
+const updateContact = async (contactId, updatedContact) => {
+    const { firstname, lastname, phone_number } = updatedContact
+    try {
+        const updated = await db.none("UPDATE contacts SET firstname=$1, lastname=$2, phone_number=$3 WHERE contact_id=$4",
+            [firstname, lastname, phone_number, contactId])
+        return updated
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { getContacts, getContactById, createContact, updateContact }

@@ -11,18 +11,27 @@ const getMedicals = async (user_id) => {
     }
 }
 
-const createMedical = async (req, res) => {
+const getmedical = async (id) => {
+  try {
+    const oneMedical = await db.one("SELECT * FROM medical WHERE id=$1", id);
+    return oneMedical;
+  } catch (error) {
+    return error;
+  }
+};
+
+const newMedical = async (medical) => {
     try {
-        const { medical_history, blood_type, allergies, medication } = medical
+     
         const newMedical = await db.one(
-          "INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNIN *",
-          [
-            medical.medical_history,
-            medical.blood_type,
-            medical.allergies,
-            medical.medication,
-            medical.user_id
-          ]
+            "INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNIN *",
+            [
+                medical.medical_history,
+                medical.blood_type,
+                medical.allergies,
+                medical.medication,
+                medical.user_id
+            ]
         );
         return newMedical
    
@@ -30,35 +39,13 @@ const createMedical = async (req, res) => {
         return error
     }
 
-}
-
-const updateMedical = async (user_id, medical) => {
-    try {
-        const { medical_history, blood_type, allergies, medication } = medical
-        const updatedMedical = await db.one("UPDATE medical SET medical_history=$1, blood_type=$2, allergies=$3, medication=$4 WHERE user_id=$5 RETURNING * ",
-            [medical_history,
-            blood_type,
-            allergies,
-            medication,
-            user_id]
-        )
-        return updatedMedical
-        
-    } catch (error) {
-        return error
-    }
-}
-
-const deleteMedical = async (user_id) => {
-    try {
-        const deletedMedical = await db.one("DELETE FROM medical WHERE user_id=$1 RETURNING *", user_id)
-        return deletedMedical
-    } catch (error) {
-        return error
-    }
-}
+};
 
 
 
 
-module.exports  = { getMedicals, createMedical, updateMedical, deleteMedical}
+
+
+
+
+module.exports  = { getMedicals, getmedical, newMedical}

@@ -24,7 +24,7 @@ const newMedical = async (medical) => {
     try {
      
         const newMedical = await db.one(
-            "INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNIN *",
+            "INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
             [
                 medical.medical_history,
                 medical.blood_type,
@@ -43,8 +43,8 @@ const newMedical = async (medical) => {
 
 const deleteMedical = async (id) => {
   try {
-    const deletedMedical = await db.one(
-      "DELETE FROM medical WHERE id=$1 RETURNING *",
+    const deletedMedical = await db.none(
+      "DELETE FROM medical WHERE medical_id=$1 RETURNING *",
       id
     );
     return deletedMedical;
@@ -54,16 +54,17 @@ const deleteMedical = async (id) => {
 };
 
 
-const updateMedical = async (medical) => {
+const updateMedical = async (id, medical) => {
+  const { medical_history, blood_type, allergies, medication } = medical;
   try {
     const updatedMedical = await db.one(
-      "UPDATE medical SET medical_history=$1, blood_type=$2, allergies=$3, medication=$4, user_id=$5 WHERE id=$6  RETURNING * ",
+      "UPDATE medical SET medical_history=$1, blood_type=$2, allergies=$3, medication=$4 WHERE medical_id=$5 ",
       [
-        medical.medical_history,
-        medical.blood_type,
-        medical.allergies,
-        medical.medication,
-        user_id,
+        medical_history,
+        blood_type,
+        allergies,
+        medication,
+        id
       ]
     );
     return updatedMedical;

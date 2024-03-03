@@ -40,24 +40,33 @@ medical.post("/", async (req, res) => {
 
 //UPDATE
 medical.put("/:id", async (req, res) => {
-  const { id, user_id } = req.params;
-  const updatedMedical = await updateMedical({ user_id, id, ...req.body });
-  if (updatedMedical.id) {
-    res.status(200).json(updatedMedical);
-  } else {
-    res.status(404).json("Medical History not found");
+  const { id } = req.params;
+  const { medical_history, blood_type, allergies, medication } = req.body;
+  try {
+    await updateMedical(id, {
+      medical_history,
+      blood_type,
+      allergies,
+      medication,
+    });
+    res.status(200).json({ message: "Contact updated successfully" });
+  } catch (err) {
+    res.status(404).json({ error: err });
   }
 });
 
 
 // DELETE
 medical.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const deletedMedical = await deleteMedical(id);
-  if (deletedReview.id) {
-    res.status(200).json(deletedMedical);
-  } else {
-    res.status(404).json({ error: "Medical Historynot found" });
+  try {
+    const { id } = req.params;
+    const deletedMedical = await deleteMedical(id);
+    if (!deletedMedical) {
+      return res.status(404).json({ error: "Medical record not found" });
+    }
+    res.status(200).json({ message: "Medical record deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

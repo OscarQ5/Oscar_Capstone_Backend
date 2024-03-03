@@ -41,6 +41,17 @@ const newMedical = async (medical) => {
 
 };
 
+const deleteMedical = async (id) => {
+  try {
+    const deletedMedical = await db.one(
+      "DELETE FROM medical WHERE id=$1 RETURNING *",
+      id
+    );
+    return deletedMedical;
+  } catch (error) {
+    return error;
+  }
+};
 
 
 
@@ -48,4 +59,5 @@ const newMedical = async (medical) => {
 
 
 
-module.exports  = { getMedicals, getmedical, newMedical}
+
+module.exports  = { getMedicals, getmedical, newMedical, deleteMedical}

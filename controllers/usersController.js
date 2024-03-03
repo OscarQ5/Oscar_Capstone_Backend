@@ -7,6 +7,9 @@ const { getUsers, getUser, createUser, logInUser, updateUser, deleteUser } = req
 const contactsController = require('./contactsController')
 users.use('/:user_id/contacts', contactsController)
 
+const medicalController = require('./medicalController')
+users.use("/:user_id/medical", medicalController);
+
 users.get('/', async (req, res) => {
     try {
         const users = await getUsers()

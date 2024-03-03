@@ -1,7 +1,10 @@
 const express = require("express");
+
 const medical = express.Router({ mergeParams: true });
-const { getMedicals, createMedical } = require("../queries/medical");
-const { getUser, getMedical } = require("../queries/users");
+
+const { getUser } = require("../queries/users");
+
+const { getMedicals, getMedical, newMedical, updateMedical } = require("../queries/medical");
 
 medical.get("/", async (req, res) => {
   const { user_id } = req.params;
@@ -14,22 +17,39 @@ medical.get("/", async (req, res) => {
   }
 });
 
+//SHOW
 medical.get("/", async (req, res) => {
   const { user_id, id } = req.params;
   try {
-    const userMedical = await getMedical(id);
+    const medical = await getMedical(id);
     const users = await getUser(user_id);
-    res.status(200).json({ ...users, userMedical });
+    res.status(200).json({ ...users, medical });
   } catch (err) {
     res.status(404).json({ error: err });
   }
 });
 
+
+//POST
 medical.post("/", async (req, res) => {
     const { user_id } = req.params
-    const medical = await createMedical({ user_id, ...req.body })
+    const medical = await newMedical({ user_id, ...req.body })
     res.status(200).json(medical)
 })
+
+
+//UPDATE
+medical.put("/:id", async (req, res) => {
+  const { id, user_id } = req.params;
+  const updatedMedical = await updateMedical({ user_id, id, ...req.body });
+  if (updatedMedical.id) {
+    res.status(200).json(updatedMedical);
+  } else {
+    res.status(404).json("Medical not found");
+  }
+});
+
+
 
 
 module.exports = medical

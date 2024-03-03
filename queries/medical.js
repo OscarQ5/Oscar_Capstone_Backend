@@ -1,4 +1,4 @@
-const db = require('../db/dbconfig')
+const db = require('../db/dbConfig')
 
 const getMedicals = async (user_id) => {
     try {
@@ -11,7 +11,7 @@ const getMedicals = async (user_id) => {
     }
 }
 
-const getmedical = async (id) => {
+const getMedical = async (id) => {
   try {
     const oneMedical = await db.one("SELECT * FROM medical WHERE id=$1", id);
     return oneMedical;
@@ -80,4 +80,4 @@ const updateMedical = async (medical) => {
 
 
 
-module.exports  = { getMedicals, getmedical, newMedical, deleteMedical, updateMedical}
+module.exports  = { getMedicals, getMedical, newMedical, deleteMedical, updateMedical}

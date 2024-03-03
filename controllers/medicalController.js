@@ -4,7 +4,7 @@ const medical = express.Router({ mergeParams: true });
 
 const { getUser } = require("../queries/users");
 
-const { getMedicals, getMedical, newMedical, updateMedical } = require("../queries/medical");
+const { getMedicals, getMedical, newMedical, updateMedical, deleteMedical } = require("../queries/medical");
 
 medical.get("/", async (req, res) => {
   const { user_id } = req.params;
@@ -45,7 +45,19 @@ medical.put("/:id", async (req, res) => {
   if (updatedMedical.id) {
     res.status(200).json(updatedMedical);
   } else {
-    res.status(404).json("Medical not found");
+    res.status(404).json("Medical History not found");
+  }
+});
+
+
+// DELETE
+medical.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  const deletedMedical = await deleteMedical(id);
+  if (deletedReview.id) {
+    res.status(200).json(deletedMedical);
+  } else {
+    res.status(404).json({ error: "Medical Historynot found" });
   }
 });
 

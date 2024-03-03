@@ -54,10 +54,30 @@ const deleteMedical = async (id) => {
 };
 
 
+const updateMedical = async (medical) => {
+  try {
+    const updatedMedical = await db.one(
+      "UPDATE medical SET medical_history=$1, blood_type=$2, allergies=$3, medication=$4, user_id=$5 WHERE id=$6  RETURNING * ",
+      [
+        medical.medical_history,
+        medical.blood_type,
+        medical.allergies,
+        medical.medication,
+        user_id,
+      ]
+    );
+    return updatedMedical;
+  } catch (error) {
+    return error;
+  }
+};
 
 
 
 
 
 
-module.exports  = { getMedicals, getmedical, newMedical, deleteMedical}
+
+
+
+module.exports  = { getMedicals, getmedical, newMedical, deleteMedical, updateMedical}

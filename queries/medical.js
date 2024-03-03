@@ -2,10 +2,8 @@ const db = require('../db/dbConfig')
 
 const getMedicals = async (user_id) => {
     try {
-        const medicals = await db.any(
-          "SELECT * FROM medical WHERE user_id=$1", user_id);
+        const medicals = await db.any("SELECT * FROM medical WHERE user_id=$1", user_id)
         return medicals
-
     } catch (err) {
         return err
     }
@@ -22,17 +20,10 @@ const getMedical = async (id) => {
 
 const newMedical = async (medical) => {
     try {
-     
-        const newMedical = await db.one(
-            "INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            [
-                medical.medical_history,
-                medical.blood_type,
-                medical.allergies,
-                medical.medication,
-                medical.user_id
-            ]
-        );
+        const { medical_history, blood_type, allergies, medication } = medical
+        const newMedical = await db.one("INSERT INTO medical (medical_history, blood_type, allergies, medication) VALUES ($1, $2, $3, $4) RETURNING *",
+          [medical_history, blood_type, allergies, medication]
+        )
         return newMedical
    
     } catch (error) {

@@ -11,7 +11,7 @@ const getMedicals = async (user_id) => {
 
 const getMedical = async (id) => {
   try {
-    const oneMedical = await db.one("SELECT * FROM medical WHERE id=$1", id);
+    const oneMedical = await db.one("SELECT * FROM medical WHERE medical_id=$1", id);
     return oneMedical;
   } catch (error) {
     return error;
@@ -20,12 +20,11 @@ const getMedical = async (id) => {
 
 const newMedical = async (medical) => {
     try {
-        const { medical_history, blood_type, allergies, medication } = medical
-        const newMedical = await db.one("INSERT INTO medical (medical_history, blood_type, allergies, medication) VALUES ($1, $2, $3, $4) RETURNING *",
-          [medical_history, blood_type, allergies, medication]
+        const { medical_history, blood_type, allergies, medication, user_id } = medical
+        const newMedical = await db.one("INSERT INTO medical (medical_history, blood_type, allergies, medication, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+          [medical_history, blood_type, allergies, medication, user_id]
         )
         return newMedical
-   
     } catch (error) {
         return error
     }
@@ -63,13 +62,5 @@ const updateMedical = async (id, medical) => {
     return error;
   }
 };
-
-
-
-
-
-
-
-
 
 module.exports  = { getMedicals, getMedical, newMedical, deleteMedical, updateMedical}

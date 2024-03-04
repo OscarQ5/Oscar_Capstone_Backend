@@ -1,42 +1,39 @@
 const express = require("express");
-
 const medical = express.Router({ mergeParams: true });
-
-const { getUser } = require("../queries/users");
-
 const { getMedicals, getMedical, newMedical, updateMedical, deleteMedical } = require("../queries/medical");
 
 medical.get("/", async (req, res) => {
   const { user_id } = req.params;
   try {
-      const userMedical = await getMedicals(user_id);
-      const users = await getUser(user_id)
-    res.status(200).json({...users, userMedical});
+    const userMedical = await getMedicals(user_id);
+    res.status(200).json(userMedical);
   } catch (err) {
     res.status(404).json({ error: err });
   }
 });
 
 //SHOW
-medical.get("/", async (req, res) => {
-  const { user_id, id } = req.params;
+medical.get("/:id", async (req, res) => {
+  const { id } = req.params;
   try {
     const medical = await getMedical(id);
-    const users = await getUser(user_id);
-    res.status(200).json({ ...users, medical });
+    res.status(200).json(medical);
   } catch (err) {
     res.status(404).json({ error: err });
   }
 });
 
-
 //POST
 medical.post("/", async (req, res) => {
+  try {
+    const { medical_history, blood_type, allergies, medication } = req.body
     const { user_id } = req.params
-    const medical = await newMedical({ user_id, ...req.body })
-    res.status(200).json(medical)
+    const medical = await newMedical({medical_history, blood_type, allergies, medication, user_id})
+    res.status(201).json(medical)
+  } catch (err) {
+    res.status(500).json({ error: "Internal Server Error" })
+  }
 })
-
 
 //UPDATE
 medical.put("/:id", async (req, res) => {
@@ -55,7 +52,6 @@ medical.put("/:id", async (req, res) => {
   }
 });
 
-
 // DELETE
 medical.delete("/:id", async (req, res) => {
   try {
@@ -69,8 +65,5 @@ medical.delete("/:id", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
 
 module.exports = medical

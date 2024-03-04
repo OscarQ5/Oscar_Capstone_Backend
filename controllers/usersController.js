@@ -10,6 +10,9 @@ users.use('/contacts', contactsController)
 const medicalController = require('./medicalController')
 users.use("/:user_id/medical", medicalController);
 
+const villagesController = require('./villagesController')
+users.use('/villages', villagesController)
+
 users.get('/', async (req, res) => {
     try {
         const users = await getUsers()

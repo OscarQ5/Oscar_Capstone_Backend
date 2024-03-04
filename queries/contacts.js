@@ -9,9 +9,9 @@ const getContacts = async (user_id) => {
     }
 }
 
-const getContactById = async (contact_id) => {
+const getContactByIdAndUserId = async (contact_id, user_id) => {
     try {
-        const contact = await db.one("SELECT * FROM contacts WHERE contact_id=$1", contact_id)
+        const contact = await db.oneOrNone("SELECT * FROM contacts WHERE contact_id=$1 AND user_id=$2", [contact_id, user_id])
         return contact
     } catch (err) {
         return err
@@ -29,23 +29,35 @@ const createContact = async (contact) => {
     }
 }
 
-const updateContact = async (contact_id, updatedContact) => {
-    const { firstname, lastname, phone_number } = updatedContact
+const updateContact = async (contact_id, updatedContact, user_id) => {
     try {
-        const updated = await db.none("UPDATE contacts SET firstname=$1, lastname=$2, phone_number=$3 WHERE contact_id=$4",
-            [firstname, lastname, phone_number, contact_id])
+        const contact = await getContactByIdAndUserId(contact_id, user_id)
+        if (!contact) {
+            throw new Error("Contact not found or does not belong to the user");
+        }
+
+        const { firstname, lastname, phone_number } = updatedContact
+        await db.none("UPDATE contacts SET firstname=$1, lastname=$2, phone_number=$3 WHERE contact_id=$4 AND user_id=$5",
+        [firstname, lastname, phone_number, contact_id, user_id])
+
+        const updated = await getContactByIdAndUserId(contact_id, user_id)
         return updated
     } catch (err) {
         return err
     }
 }
 
-const deleteContact = async (contact_id) => {
+const deleteContact = async (contact_id, user_id) => {
     try {
-        await db.none("DELETE FROM contacts WHERE contact_id=$1", contact_id)
+        const contact = await getContactByIdAndUserId(contact_id, user_id)
+        if (!contact) {
+            throw new Error("Contact not found or does not belong to the user")
+        }
+
+        await db.none("DELETE FROM contacts WHERE contact_id=$1 AND user_id=$2", [contact_id, user_id])
     } catch (err) {
         return err
     }
 }
 
-module.exports = { getContacts, getContactById, createContact, updateContact, deleteContact }
+module.exports = { getContacts, getContactByIdAndUserId, createContact, updateContact, deleteContact }

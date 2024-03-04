@@ -1,16 +1,24 @@
 \c village_app
 
 INSERT INTO users (name, password_hash, email, phone_number) VALUES
-('John Doe', 'h@shed_password', 'john@example.com', '123-456-7890'),
-('Jane Smith', 'hash3d_password', 'jane@example.com', '987-654-3210');
+('John Doe', 'h@shed_password', 'john@example.com', '111-111-1111'),
+('Jane Smith', 'hash3d_password', 'jane@example.com', '222-222-2222'),
+('Paul Doe', 'hashed_p@ssword', 'paul@example.com', '333-333-3333'),
+('Phil Smith', 'hashed_password4', 'phil@example.com', '444-444-4444');
 
 INSERT INTO contacts (firstname, lastname, phone_number, user_id) VALUES
-('Angel', 'Michael', '862-456-7890', 1),
-('Emily', 'Brown', '987-654-3210', 2),
-('Joe', 'Jackson', '973-654-3310', 2);
+('Angel', 'Michael', '555-555-5555', 1),
+('Emily', 'Brown', '666-666-6666', 2),
+('Joe', 'Jackson', '777-777-7777', 3),
+('Mark', 'Smith', '888-888-8888', 4);
 
 INSERT INTO medical (medical_history , blood_type, allergies, medication, user_id) VALUES
 ('Renal Failure', 'O+', 'none', 'crestor', 1),
-('Heart Failure', 'A+', 'peanuts and lactose', 'albuterol', 1),
-('Diabetes', 'O-', 'chips','celexa', 2),
-('COPD', 'B-', 'kiwis and pineapple', 'abilify', 2);
+('Heart Failure', 'A+', 'peanuts and lactose', 'albuterol', 2),
+('Diabetes', 'O-', 'chips','celexa', 3),
+('COPD', 'B-', 'kiwis and pineapple', 'abilify', 4);
+
+INSERT INTO villages (village_name, village_code, creator_id) VALUES
+('Village A', 'CODE123', 1),
+('Village B', 'CODE456', 2),
+('Village C', 'CODE789', 3);

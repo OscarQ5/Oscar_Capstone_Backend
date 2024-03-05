@@ -9,9 +9,9 @@ const getMedicals = async (user_id) => {
     }
 }
 
-const getMedical = async (id) => {
+const getMedical = async (id, user_id) => {
   try {
-    const oneMedical = await db.one("SELECT * FROM medical WHERE medical_id=$1", id);
+    const oneMedical = await db.oneOrNone("SELECT * FROM medical WHERE medical_id=$1 AND user_id=$2", [id, user_id]);
     return oneMedical;
   } catch (error) {
     return error;

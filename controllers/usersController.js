@@ -8,7 +8,7 @@ const contactsController = require('./contactsController')
 users.use('/contacts', contactsController)
 
 const medicalController = require('./medicalController')
-users.use("/:user_id/medical", medicalController);
+users.use("/medical", medicalController);
 
 const villagesController = require('./villagesController')
 users.use('/villages', villagesController)

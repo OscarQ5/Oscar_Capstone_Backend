@@ -1,13 +1,19 @@
 const express = require("express");
 const medical = express.Router({ mergeParams: true });
-const { getMedicals, getMedical, newMedical, updateMedical, deleteMedical } = require("../queries/medical");
-const { authenticateToken } = require('../auth/auth')
+const {
+  getMedicals,
+  getMedical,
+  newMedical,
+  updateMedical,
+  deleteMedical,
+} = require("../queries/medical");
+const { authenticateToken } = require("../auth/auth");
 
-medical.use(authenticateToken)
+medical.use(authenticateToken);
 
 medical.get("/", async (req, res) => {
   try {
-    const { user_id } = req.user 
+    const { user_id } = req.user;
     const userMedical = await getMedicals(user_id);
     res.status(200).json(userMedical);
   } catch (err) {
@@ -19,9 +25,14 @@ medical.get("/", async (req, res) => {
 medical.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const { user_id } = req.user
+    const { user_id } = req.user;
     const medical = await getMedical(id, user_id);
-    if (!medical) return res.status(404).json({ error: "Medical record not found or does not belong to the user" })
+    if (!medical)
+      return res
+        .status(404)
+        .json({
+          error: "Medical record not found or does not belong to the user",
+        });
     res.status(200).json(medical);
   } catch (err) {
     res.status(404).json({ error: err });
@@ -31,14 +42,20 @@ medical.get("/:id", async (req, res) => {
 //POST
 medical.post("/", async (req, res) => {
   try {
-    const { medical_history, blood_type, allergies, medication } = req.body
-    const { user_id } = req.user
-    const medical = await newMedical({medical_history, blood_type, allergies, medication, user_id})
-    res.status(201).json(medical)
+    const { medical_history, blood_type, allergies, medication } = req.body;
+    const { user_id } = req.user;
+    const medical = await newMedical({
+      medical_history,
+      blood_type,
+      allergies,
+      medication,
+      user_id,
+    });
+    res.status(201).json(medical);
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" })
+    res.status(500).json({ error: "Internal Server Error" });
   }
-})
+});
 
 //UPDATE
 medical.put("/:id", async (req, res) => {
@@ -71,4 +88,4 @@ medical.delete("/:id", async (req, res) => {
   }
 });
 
-module.exports = medical
+module.exports = medical;

@@ -22,3 +22,8 @@ INSERT INTO villages (village_name, village_code, creator_id) VALUES
 ('Village A', 'CODE123', 1),
 ('Village B', 'CODE456', 2),
 ('Village C', 'CODE789', 3);
+
+INSERT INTO village_users (user_id, village_id, is_admin) VALUES
+(1, 1, true),
+(2, 1, false),
+(3, 2, true);

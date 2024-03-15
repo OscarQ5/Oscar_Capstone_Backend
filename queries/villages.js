@@ -60,6 +60,7 @@ const updateVillage = async (village_id, village_name) => {
 
 const deleteVillage = async (village_id) => {
   try {
+    await db.none('DELETE FROM village_users WHERE village_id=$1', village_id)
     await db.none("DELETE FROM villages WHERE village_id=$1", village_id);
   } catch (err) {
     return err;

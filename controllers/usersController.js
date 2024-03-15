@@ -13,6 +13,9 @@ users.use("/medical", medicalController);
 const villagesController = require('./villagesController')
 users.use('/villages', villagesController)
 
+const villageUsersController = require('./villageUsersController')
+users.use('/village-users', villageUsersController)
+
 users.get('/', async (req, res) => {
     try {
         const users = await getUsers()

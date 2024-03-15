@@ -13,6 +13,7 @@ villages.post('/', async (req, res) => {
         const newVillage = await createVillage(village_name, creator_id)
         const creator = await getUser(newVillage.creator_id)
         newVillage.creator = creator
+        newVillage.creator.is_admin = true
         res.status(201).json(newVillage)
     } catch (err) {
         res.status(500).json({ error: err })

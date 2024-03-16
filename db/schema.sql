@@ -32,3 +32,30 @@ CREATE TABLE medical (
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE villages (
+    village_id SERIAL PRIMARY KEY,
+    village_name VARCHAR(255) NOT NULL,
+    village_code VARCHAR(20) UNIQUE NOT NULL,
+    creator_id INT REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- CREATE TABLE village_users (
+--     village_user_id SERIAL PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     village_id INT NOT NULL,
+--     is_admin BOOLEAN DEFAULT FALSE,
+--     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+--     FOREIGN KEY (village_id) REFERENCES villages(village_id) ON DELETE CASCADE,
+--     UNIQUE (user_id, village_id)
+-- );
+
+CREATE TABLE village_users (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    village_id INT NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT false,
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT fk_village FOREIGN KEY (village_id) REFERENCES villages(village_id),
+       UNIQUE (user_id, village_id)
+);

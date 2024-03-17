@@ -22,7 +22,7 @@ const getUser = async (id) => {
 
 const createUser = async (user) => {
   try {
-    const { name, password_hash, email, phone_number, profile_picture_url } =
+    const { name, username, password_hash, email, phone_number, profile_picture_url } =
       user;
     const salt = 10;
     const hash = await bcrypt.hash(password_hash, salt);
@@ -30,8 +30,8 @@ const createUser = async (user) => {
       ? profile_picture_url
       : "/static/default_profile_pic.webp";
     const newUser = await db.one(
-      "INSERT INTO users (name, password_hash, email, phone_number, profile_picture_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [name, hash, email, phone_number, profilePic]
+      "INSERT INTO users (name, username, password_hash, email, phone_number, profile_picture_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [name, username, hash, email, phone_number, profilePic]
     );
     return newUser;
   } catch (err) {
@@ -42,8 +42,8 @@ const createUser = async (user) => {
 const logInUser = async (user) => {
   try {
     const loggedInUser = await db.oneOrNone(
-      "SELECT * FROM users WHERE phone_number=$1",
-      user.phone_number
+      "SELECT * FROM users WHERE username=$1",
+      user.username
     );
     if (!loggedInUser) return false;
     const passwordMatch = await bcrypt.compare(
@@ -59,7 +59,7 @@ const logInUser = async (user) => {
 
 const updateUser = async (id, updatedUser) => {
   try {
-    const { name, password_hash, email, phone_number, profile_picture_url } =
+    const { name, username, password_hash, email, phone_number, profile_picture_url } =
       updatedUser;
     const salt = 10;
     const hash = await bcrypt.hash(password_hash, salt);
@@ -67,8 +67,8 @@ const updateUser = async (id, updatedUser) => {
       ? profile_picture_url
       : "/static/default_profile_pic.webp";
     const updated = await db.none(
-      "UPDATE users SET name=$1, password_hash=$2, email=$3, phone_number=$4, profile_picture_url=$5 WHERE user_id=$6 RETURNING *",
-      [name, hash, email, phone_number, profilePic, id]
+      "UPDATE users SET name=$1, username=$2, password_hash=$3, email=$4, phone_number=$5, profile_picture_url=$6 WHERE user_id=$7 RETURNING *",
+      [name, username, hash, email, phone_number, profilePic, id]
     );
     return updated;
   } catch (err) {

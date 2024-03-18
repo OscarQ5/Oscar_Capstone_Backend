@@ -46,7 +46,7 @@ users.post("/sign-up", async (req, res) => {
   try {
     const newUser = await createUser(req.body);
     const token = jwt.sign(
-      { user_id: newUser.user_id, name: newUser.name },
+      { user_id: newUser.user_id, name: newUser.name, username: newUser.username },
       secret
     );
     res.status(201).json({ user: newUser, token });
@@ -59,12 +59,12 @@ users.post("/login", async (req, res) => {
   try {
     const user = await logInUser(req.body);
     if (!user) {
-      res.status(401).json({ error: "Invalid phone number or password" });
+      res.status(401).json({ error: "Invalid username or password" });
       return;
     }
 
     const token = jwt.sign(
-      { user_id: user.user_id, phone_number: user.phone_number },
+      { user_id: user.user_id, name: user.name, username: user.username },
       secret
     );
 
@@ -72,6 +72,7 @@ users.post("/login", async (req, res) => {
       user: {
         user_id: user.user_id,
         name: user.name,
+        username: user.username,
         phone_number: user.phone_number,
         email: user.email,
       },

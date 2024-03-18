@@ -1,10 +1,10 @@
 \c village_app
 
-INSERT INTO users (name, password_hash, email, phone_number) VALUES
-('John Doe', 'h@shed_password', 'john@example.com', '111-111-1111'),
-('Jane Smith', 'hash3d_password', 'jane@example.com', '222-222-2222'),
-('Paul Doe', 'hashed_p@ssword', 'paul@example.com', '333-333-3333'),
-('Phil Smith', 'hashed_password4', 'phil@example.com', '444-444-4444');
+INSERT INTO users (name, username, password_hash, email, phone_number) VALUES
+('John Doe', 'johndoe', 'h@shed_password', 'john@example.com', '111-111-1111'),
+('Jane Smith', 'janesmith', 'hash3d_password', 'jane@example.com', '222-222-2222'),
+('Paul Doe', 'pauldoe', 'hashed_p@ssword', 'paul@example.com', '333-333-3333'),
+('Phil Smith', 'philsmith', 'hashed_password4', 'phil@example.com', '444-444-4444');
 
 INSERT INTO contacts (firstname, lastname, phone_number, user_id) VALUES
 ('Angel', 'Michael', '555-555-5555', 1),

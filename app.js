@@ -1,9 +1,12 @@
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
 const app = express();
 const path = require("path");
+const twilio = require('twilio')
 const usersController = require("./controllers/usersController");
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_AUTH_TOKEN
+const client = twilio(accountSid, authToken)
 
 app.use(cors());
 app.use(express.json());
@@ -14,40 +17,33 @@ app.get("/", (req, res) => {
   res.json({ index: "This is the index page" });
 });
 
-const API_KEY = "AIzaSyDfzCtuefPpjRO2CKPJceBpqlNW_MyUPd0";
-
-app.get("/nearest", async (req, res) => {
-  const { type, lat, lng } = req.query;
-
+app.post('/sendSMS', async (req, res) => {
+  const { to, message } = req.body
   try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json`,
-      {
-        params: {
-          location: `${lat},${lng}`,
-          radius: 5000,
-          type: type,
-          key: API_KEY,
-        },
+    if (Array.isArray(to)) {
+      // Send group SMS
+      for (const phoneNumber of to) {
+        const response = await client.messages.create({
+          body: message,
+          from: '+18442507058',
+          to: phoneNumber
+        });
+        console.log(`SMS sent to ${phoneNumber} successfully:`, response.sid);
       }
-    );
-
-    if (
-      response.data &&
-      response.data.results &&
-      response.data.results.length > 0
-    ) {
-      const nearestPlace = response.data.results[0];
-      const { name, geometry } = nearestPlace;
-      const { lat, lng } = geometry.location;
-
-      res.json({ name, latitude: lat, longitude: lng });
     } else {
-      res.status(404).json({ error: `No ${type} found nearby.` });
+      // Send single SMS
+      const response = await client.messages.create({
+        body: message,
+        from: '+18442507058',
+        to: to
+      });
+      console.log('SMS sent successfully:', response.sid)
     }
+    return true
   } catch (error) {
-    console.error("Error fetching nearest place:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error sending SMS:', error)
+    throw error
   }
-});
-module.exports = app;
+})
+
+module.exports = app

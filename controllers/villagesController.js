@@ -6,6 +6,7 @@ const {
   updateVillage,
   deleteVillage,
   getVillages,
+  getAllVillages,
 } = require("../queries/villages");
 const { authenticateToken } = require("../auth/auth");
 const { getUser } = require("../queries/users");
@@ -26,7 +27,7 @@ villages.post("/", async (req, res) => {
   }
 });
 
-villages.get("/:id", async (req, res) => {
+villages.get("/village/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const village = await getVillage(id);
@@ -45,6 +46,15 @@ villages.get("/", async (req, res) => {
   try {
     const userVillages = await getVillages(user_id);
     res.status(200).json(userVillages);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
+
+villages.get("/allvillages", async (req, res) => {
+  try {
+    const allVillages = await getAllVillages()
+    res.status(200).json(allVillages);
   } catch (err) {
     res.status(500).json({ error: err });
   }

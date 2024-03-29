@@ -24,7 +24,7 @@ villageUsers.post("/", async (req, res) => {
     res.status(201).json(villageUser);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: err.message }); // Send detailed error message
+    res.status(500).json({ error: err.message }); 
   }
 });
 

@@ -35,6 +35,15 @@ const getVillage = async (village_id) => {
   }
 };
 
+const getAllVillages = async () => {
+  try {
+    const allVillages = await db.any("SELECT * FROM villages");
+    return allVillages
+  } catch (err) {
+    return err
+  }
+}
+
 const getVillages = async (user_id) => {
   try {
     const villages = await db.any(
@@ -73,4 +82,5 @@ module.exports = {
   updateVillage,
   deleteVillage,
   getVillages,
+  getAllVillages,
 };

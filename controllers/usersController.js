@@ -23,6 +23,9 @@ users.use("/villages", villagesController);
 const villageUsersController = require("./villageUsersController");
 users.use("/village-users", villageUsersController);
 
+const villageJoinRequestsController = require("./villageJoinRequestsController")
+users.use("/villageJoinRequests", villageJoinRequestsController)
+
 users.get("/", async (req, res) => {
   try {
     const users = await getUsers();
@@ -75,6 +78,9 @@ users.post("/login", async (req, res) => {
         username: user.username,
         phone_number: user.phone_number,
         email: user.email,
+        status: user.status,
+        is_admin: user.is_admin,
+        profile_picture_url: user.profile_picture_url,
       },
       token,
     });

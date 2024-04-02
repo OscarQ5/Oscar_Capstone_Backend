@@ -26,4 +26,9 @@ INSERT INTO villages (village_name, village_code, creator_id) VALUES
 INSERT INTO village_users (user_id, village_id, is_admin) VALUES
 (1, 1, true),
 (2, 1, false),
-(3, 2, true);
+(1, 2, false);
+
+INSERT INTO village_join_requests (user_id, village_id, request_date, is_accepted, admin_id, reviewed_date) VALUES
+(3, 1, '2024-03-28 10:00:00', false, 1, '2024-03-28 10:05:00'),
+(1, 2, '2024-03-28 10:30:00', false, 2, '2024-03-28 10:35:00'),
+(2, 3, '2024-03-29 09:00:00', false, 3, '2024-03-29 09:05:00');

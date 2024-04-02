@@ -30,4 +30,13 @@ const adminRequests = async (village_id) => {
     }
 }
 
-module.exports = { createJoinRequest, getAllRequests, adminRequests }
+const deleteJoinRequest = async (request_id) => {
+    try {
+        await db.none("DELETE FROM village_join_requests WHERE request_id=$1", request_id)
+        return {message: "Join request deleted successfully"}
+    } catch (err) {
+        return err
+    }
+}
+
+module.exports = { createJoinRequest, getAllRequests, adminRequests, deleteJoinRequest }

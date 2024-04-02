@@ -47,7 +47,7 @@ const getAllVillages = async () => {
 const getVillages = async (user_id) => {
   try {
     const villages = await db.any(
-      "SELECT * FROM villages WHERE creator_id=$1",
+      "SELECT DISTINCT v.* FROM villages v LEFT JOIN village_users vu ON v.village_id = vu.village_id WHERE vu.user_id = $1 OR v.creator_id = $1",
       user_id
     );
     return villages;

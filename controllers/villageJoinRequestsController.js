@@ -1,7 +1,7 @@
 const express = require("express")
 const villageJoinRequests = express.Router({ mergeParams: true })
 const { authenticateToken } = require("../auth/auth")
-const { createJoinRequest, getAllRequests, adminRequests } = require("../queries/villageJoinRequests")
+const { createJoinRequest, getAllRequests, adminRequests, deleteJoinRequest } = require("../queries/villageJoinRequests")
 
 villageJoinRequests.use(authenticateToken)
 
@@ -31,6 +31,16 @@ villageJoinRequests.get("/:village_id", async (req,res) => {
         res.status(200).json(requests)
     } catch (err) {
         res.status(404).json({ error: err})
+    }
+})
+
+villageJoinRequests.delete("/:request_id", async (req,res) => {
+    try {
+        const request_id = req.params.request_id
+        const result = await deleteJoinRequest(request_id)
+        res.status(200).json(result)
+    } catch (err) {
+        req.status(500).json({error: err})
     }
 })
 

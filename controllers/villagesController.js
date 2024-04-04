@@ -8,12 +8,13 @@ const {
   getVillages,
   getAllVillages,
 } = require("../queries/villages");
+const { checkDuplicateVillage } = require("../validations/checkVillages")
 const { authenticateToken } = require("../auth/auth");
 const { getUser } = require("../queries/users");
 
 villages.use(authenticateToken);
 
-villages.post("/", async (req, res) => {
+villages.post("/", checkDuplicateVillage, async (req, res) => {
   const { village_name } = req.body;
   try {
     const creator_id = req.user.user_id;

@@ -11,6 +11,15 @@ const {
   updateUser,
   deleteUser,
 } = require("../queries/users");
+const {
+  checkRequiredFields,
+  validateEmail,
+  validatePhoneNumber,
+  validateLoginInput,
+  checkDuplicateEmail,
+  checkDuplicatePhoneNumber,
+  checkDuplicateUsername
+} = require("../validations/checkUser.js")
 const contactsController = require("./contactsController");
 users.use("/contacts", contactsController);
 
@@ -45,7 +54,7 @@ users.get("/:id", async (req, res) => {
   }
 });
 
-users.post("/sign-up", async (req, res) => {
+users.post("/sign-up", checkRequiredFields, validateEmail, validatePhoneNumber, checkDuplicateUsername, checkDuplicateEmail, checkDuplicatePhoneNumber, async (req, res) => {
   try {
     const newUser = await createUser(req.body);
     const token = jwt.sign(
@@ -58,7 +67,7 @@ users.post("/sign-up", async (req, res) => {
   }
 });
 
-users.post("/login", async (req, res) => {
+users.post("/login", validateLoginInput, async (req, res) => {
   try {
     const user = await logInUser(req.body);
     if (!user) {

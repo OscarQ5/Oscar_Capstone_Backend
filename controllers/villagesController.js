@@ -8,7 +8,7 @@ const {
   getVillages,
   getAllVillages,
 } = require("../queries/villages");
-const { checkDuplicateVillage } = require("../validations/checkVillages")
+const { checkDuplicateVillage, checkAdminStatus } = require("../validations/checkVillages")
 const { authenticateToken } = require("../auth/auth");
 const { getUser } = require("../queries/users");
 
@@ -61,7 +61,7 @@ villages.get("/allvillages", async (req, res) => {
   }
 });
 
-villages.put("/:id", async (req, res) => {
+villages.put("/:id", checkAdminStatus, async (req, res) => {
   const { id } = req.params;
   const { village_name } = req.body;
   try {
@@ -73,7 +73,7 @@ villages.put("/:id", async (req, res) => {
   }
 });
 
-villages.delete("/:id", async (req, res) => {
+villages.delete("/:id", checkAdminStatus, async (req, res) => {
   try {
     const { id } = req.params;
     await deleteVillage(id);

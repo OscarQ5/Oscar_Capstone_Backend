@@ -17,4 +17,25 @@ const checkDuplicateVillage = async (req, res, next) => {
     }
 }
 
-module.exports = { checkDuplicateVillage }
+const checkAdminStatus = async (req, res, next) => {
+    const { user_id } = req.user
+    const { id } = req.params
+    try {
+        const village = await db.oneOrNone("SELECT * FROM villages WHERE village_id=$1", id)
+
+        if (!village) {
+            return res.status(404).json({ error: "Village not found" })
+        }
+
+        if (village.admin_id !== user_id) {
+            return res.status(403).json({ error: "Only admins can perform this action" })
+        }
+
+        next()
+    } catch (err) {
+        console.error("Error checking admin status:", err)
+        return res.status(500).json({ error: "Internal Server Error" })
+    }
+}
+
+module.exports = { checkDuplicateVillage, checkAdminStatus }

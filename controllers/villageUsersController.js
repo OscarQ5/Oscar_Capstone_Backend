@@ -9,6 +9,7 @@ const {
   deleteVillageUser,
 } = require("../queries/villageUsers");
 const { authenticateToken } = require("../auth/auth");
+const { checkAdminStatus } = require("../validations/checkVillages");
 
 villageUsers.use(authenticateToken);
 
@@ -38,7 +39,7 @@ villageUsers.get("/:village_id", async (req, res) => {
   }
 });
 
-villageUsers.put("/:village_user_id", async (req, res) => {
+villageUsers.put("/:village_user_id", checkAdminStatus, async (req, res) => {
   try {
     const { village_user_id } = req.params;
     const { is_admin } = req.body;
@@ -50,7 +51,7 @@ villageUsers.put("/:village_user_id", async (req, res) => {
   }
 });
 
-villageUsers.delete("/:village_user_id", async (req, res) => {
+villageUsers.delete("/:village_user_id", checkAdminStatus, async (req, res) => {
   try {
     const { village_user_id } = req.params;
     //check if auth user is admin of village

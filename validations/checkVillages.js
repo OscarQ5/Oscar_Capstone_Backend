@@ -19,15 +19,15 @@ const checkDuplicateVillage = async (req, res, next) => {
 
 const checkAdminStatus = async (req, res, next) => {
     const { user_id } = req.user
-    const { id } = req.params
+    const village_id = req.params.id || req.query.village_id
     try {
-        const village = await db.oneOrNone("SELECT * FROM villages WHERE village_id=$1", id)
+        const village = await db.oneOrNone("SELECT * FROM villages WHERE village_id=$1", village_id)
 
         if (!village) {
             return res.status(404).json({ error: "Village not found" })
         }
 
-        if (village.admin_id !== user_id) {
+        if (village.creator_id !== user_id) {
             return res.status(403).json({ error: "Only admins can perform this action" })
         }
 

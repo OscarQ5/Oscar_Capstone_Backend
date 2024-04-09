@@ -8,7 +8,18 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const client = twilio(accountSid, authToken)
 
-app.use(cors());
+const whitelist = ['https://village-app.netlify.app', 'http://localhost:5555', 'http://localhost:5173']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/users", usersController);
 app.use("/static", express.static(path.join(__dirname, "public")));

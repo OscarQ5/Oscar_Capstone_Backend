@@ -11,6 +11,7 @@ const client = twilio(accountSid, authToken)
 const whitelist = ['https://village-app.netlify.app', 'http://localhost:5555', 'http://localhost:5173']
 const corsOptions = {
   origin: function (origin, callback) {
+    console.log(origin)
     if (whitelist.includes(origin)) {
       callback(null, true)
     } else {

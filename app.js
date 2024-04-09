@@ -8,10 +8,10 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
 const client = twilio(accountSid, authToken)
 
-const whitelist = ['https://village-app.netlify.app', 'http://localhost:5555', 'http://localhost:5173']
+const whitelist = ['https://village-app.netlify.app', 'http://localhost:5555', 'http://localhost:5173', 'https://capstone-backend-5lwt.onrender.com']
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin)
+    console.log("Error:", origin)
     if (whitelist.includes(origin)) {
       callback(null, true)
     } else {
@@ -21,6 +21,7 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use("/users", usersController);
 app.use("/static", express.static(path.join(__dirname, "public")));

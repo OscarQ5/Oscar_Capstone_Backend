@@ -58,21 +58,39 @@ const logInUser = async (user) => {
 };
 
 const updateUser = async (id, updatedUser) => {
-  try {
-    const { name, username, password_hash, email, phone_number, profile_picture_url } =
-      updatedUser;
-    const salt = 10;
-    const hash = await bcrypt.hash(password_hash, salt);
-    const profilePic = profile_picture_url
-      ? profile_picture_url
-      : "/static/default_profile_pic.webp";
-    const updated = await db.none(
-      "UPDATE users SET name=$1, username=$2, password_hash=$3, email=$4, phone_number=$5, profile_picture_url=$6 WHERE user_id=$7 RETURNING *",
-      [name, username, hash, email, phone_number, profilePic, id]
-    );
-    return updated;
-  } catch (err) {
-    return err;
+  const { password_hash } = updatedUser
+  if (password_hash) {
+    try {
+      const { name, username, password_hash, email, phone_number, profile_picture_url } =
+        updatedUser;
+      const salt = 10;
+      const hash = await bcrypt.hash(password_hash, salt);
+      const profilePic = profile_picture_url
+        ? profile_picture_url
+        : "/static/default_profile_pic.webp";
+      const updated = await db.none(
+        "UPDATE users SET name=$1, username=$2, password_hash=$3, email=$4, phone_number=$5, profile_picture_url=$6 WHERE user_id=$7 RETURNING *",
+        [name, username, hash, email, phone_number, profilePic, id]
+      );
+      return updated;
+    } catch (err) {
+      return err;
+    }
+  } else {
+    try {
+      const { name, username, email, phone_number, profile_picture_url } =
+        updatedUser;
+      const profilePic = profile_picture_url
+        ? profile_picture_url
+        : "/static/default_profile_pic.webp";
+      const updated = await db.none(
+        "UPDATE users SET name=$1, username=$2, email=$3, phone_number=$4, profile_picture_url=$5 WHERE user_id=$6 RETURNING *",
+        [name, username, email, phone_number, profilePic, id]
+      );
+      return updated;
+    } catch (err) {
+      return err;
+    }
   }
 };
 

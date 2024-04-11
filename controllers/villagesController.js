@@ -11,6 +11,7 @@ const {
 const { checkDuplicateVillage, checkAdminStatus } = require("../validations/checkVillages")
 const { authenticateToken } = require("../auth/auth");
 const { getUser } = require("../queries/users");
+const { createVillageUser } = require("../queries/villageUsers");
 
 villages.use(authenticateToken);
 
@@ -19,9 +20,9 @@ villages.post("/", checkDuplicateVillage, async (req, res) => {
   try {
     const creator_id = req.user.user_id;
     const newVillage = await createVillage(village_name, creator_id);
+    await createVillageUser(creator_id, newVillage.village_id, true)
     const creator = await getUser(newVillage.creator_id);
     newVillage.creator = creator;
-    newVillage.creator.is_admin = true;
     res.status(201).json(newVillage);
   } catch (err) {
     res.status(500).json({ error: err });

@@ -41,54 +41,55 @@ const validateLoginInput = (req, res, next) => {
 
 const checkDuplicateUsername = async (req, res, next) => {
     const { username } = req.body
-    try {
-        const existingUser = await db.oneOrNone(
-            "SELECT * FROM users WHERE LOWER(username) = LOWER($1)",
-            username
-        )
-        if (existingUser) {
-            return res.status(400).json({ error: "Username is already taken" })
-        }
-        next()
-    } catch (err) {
-        console.error("Error checking duplicate username:", err)
-        return res.status(500).json({ error: "Internal Server Error" })
+    const existingUser = await db.oneOrNone(
+        "SELECT * FROM users WHERE LOWER(username) = LOWER($1)",
+        username
+    )
+
+    if (existingUser) {
+        return res.status(400).json({ error: "Username is already taken" })
     }
+
+    next()
 }
 
 const checkDuplicateEmail = async (req, res, next) => {
     const { email } = req.body
-    try {
-        const existingUser = await db.oneOrNone(
-            "SELECT * FROM users WHERE LOWER(email) = LOWER($1)",
-            email
-        )
-        if (existingUser) {
-            return res.status(400).json({ error: "Email is already registered" })
-        }
-        next()
-    } catch (err) {
-        console.error("Error checking duplicate email:", err)
-        return res.status(500).json({ error: "Internal Server Error" })
+    const existingUser = await db.oneOrNone(
+        "SELECT * FROM users WHERE LOWER(email) = LOWER($1)",
+        email
+    )
+
+    if (existingUser) {
+        return res.status(400).json({ error: "Email is already registered" })
     }
+
+    next()
 }
 
 const checkDuplicatePhoneNumber = async (req, res, next) => {
     const { phone_number } = req.body
-    try {
-        const existingUser = await db.oneOrNone(
-            "SELECT * FROM users WHERE phone_number = $1",
-            phone_number
-        )
-        if (existingUser) {
-            return res.status(400).json({ error: "Phone number is already registered" })
-        }
-        next()
-    } catch (err) {
-        console.error("Error checking duplicate phone number:", err)
-        return res.status(500).json({ error: "Internal Server Error" })
+    const existingUser = await db.oneOrNone(
+        "SELECT * FROM users WHERE phone_number = $1",
+        phone_number
+    )
+
+    if (existingUser) {
+        return res.status(400).json({ error: "Phone number is already registered" })
     }
-};
+
+    next()
+}
+
+const isValidId = (req, res, next) => {
+    const { id } = req.params
+    const idAsNum = Number(id)
+    if (Number.isNaN(idAsNum) || idAsNum <= 0) {
+        return res.status(400).json({ error: `id must be a positive integer: ${id}` })
+    }
+    req.id = idAsNum
+    next()
+}
 
 module.exports = {
     checkRequiredFields,
@@ -97,5 +98,6 @@ module.exports = {
     validateLoginInput,
     checkDuplicateEmail,
     checkDuplicateUsername,
-    checkDuplicatePhoneNumber
+    checkDuplicatePhoneNumber,
+    isValidId
 }

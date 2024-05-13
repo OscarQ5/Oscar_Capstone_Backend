@@ -21,27 +21,22 @@ app.post('/sendSMS', async (req, res) => {
   const { to, message } = req.body
   try {
     if (Array.isArray(to)) {
-      // Send group SMS
       for (const phoneNumber of to) {
         const response = await client.messages.create({
           body: message,
           from: '+18442507058',
           to: phoneNumber
-        });
-        console.log(`SMS sent to ${phoneNumber} successfully:`, response.sid);
+        })
       }
     } else {
-      // Send single SMS
       const response = await client.messages.create({
         body: message,
         from: '+18442507058',
         to: to
-      });
-      console.log('SMS sent successfully:', response.sid)
+      })
     }
     return true
   } catch (error) {
-    console.error('Error sending SMS:', error)
     throw error
   }
 })

@@ -1,42 +1,26 @@
 const db = require("../db/dbConfig");
 
 const createJoinRequest = async (user_id, village_id) => {
-    try {
-        const joinRequest = await db.one(
-            "INSERT INTO village_join_requests (user_id, village_id) VALUES ($1, $2) RETURNING *",
-            [user_id, village_id]
-        );
-        return joinRequest;
-    } catch (err) {
-        return err;
-    }
+    const joinRequest = await db.oneOrNone(
+        "INSERT INTO village_join_requests (user_id, village_id) VALUES ($1, $2) RETURNING *",
+        [user_id, village_id]
+    )
+    return joinRequest
 };
 
 const getAllRequests = async () => {
-    try {
-        const allRequests = await db.any("SELECT * FROM village_join_requests")
-        return allRequests
-    } catch (err) {
-        return err
-    }
+    const allRequests = await db.any("SELECT * FROM village_join_requests")
+    return allRequests
 }
 
 const adminRequests = async (village_id) => {
-    try {
-        const requests = await db.any("SELECT * FROM village_join_requests WHERE village_id=$1 AND is_accepted=false", village_id)
-        return requests
-    } catch (err) {
-        return err
-    }
+    const requests = await db.any("SELECT * FROM village_join_requests WHERE village_id=$1 AND is_accepted=false", village_id)
+    return requests
 }
 
 const deleteJoinRequest = async (request_id) => {
-    try {
-        await db.none("DELETE FROM village_join_requests WHERE request_id=$1", request_id)
-        return {message: "Join request deleted successfully"}
-    } catch (err) {
-        return err
-    }
+    const deletedRequest = await db.oneOrNone("DELETE FROM village_join_requests WHERE request_id=$1 RETURNING *", request_id)
+    return deletedRequest
 }
 
 module.exports = { createJoinRequest, getAllRequests, adminRequests, deleteJoinRequest }

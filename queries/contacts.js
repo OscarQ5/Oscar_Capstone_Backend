@@ -26,11 +26,7 @@ const createContact = async (contact) => {
 };
 
 const updateContact = async (contact_id, updatedContact, user_id) => {
-  const contact = await getContactByIdAndUserId(contact_id, user_id)
-  if (!contact) {
-    throw new Error("Contact not found or does not belong to the user")
-  }
-
+  
   const { firstname, lastname, phone_number } = updatedContact
 
   const updated = await db.oneOrNone(
@@ -41,10 +37,6 @@ const updateContact = async (contact_id, updatedContact, user_id) => {
 };
 
 const deleteContact = async (contact_id, user_id) => {
-  const contact = await getContactByIdAndUserId(contact_id, user_id)
-  if (!contact) {
-    throw new Error("Contact not found or does not belong to the user")
-  }
 
   const deletedContact = await db.oneOrNone("DELETE FROM contacts WHERE contact_id=$1 AND user_id=$2 RETURNING *", [
     contact_id,

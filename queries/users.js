@@ -18,7 +18,7 @@ const createUser = async (user) => {
   const profilePic = profile_picture_url
     ? profile_picture_url
     : "/static/default_profile_pic.webp"
-  const newUser = await db.one(
+  const newUser = await db.oneOrNone(
     "INSERT INTO users (name, username, password_hash, email, phone_number, profile_picture_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
     [name, username, hash, email, phone_number, profilePic]
   )
@@ -52,7 +52,7 @@ const updateUser = async (id, updatedUser) => {
       ? profile_picture_url
       : "/static/default_profile_pic.webp"
 
-    const updated = await db.one(
+    const updated = await db.oneOrNone(
       "UPDATE users SET name=$1, username=$2, password_hash=$3, email=$4, phone_number=$5, profile_picture_url=$6 WHERE user_id=$7 RETURNING *",
       [name, username, hash, email, phone_number, profilePic, id]
     )
@@ -65,7 +65,7 @@ const updateUser = async (id, updatedUser) => {
       ? profile_picture_url
       : "/static/default_profile_pic.webp"
 
-    const updated = await db.one(
+    const updated = await db.oneOrNone(
       "UPDATE users SET name=$1, username=$2, email=$3, phone_number=$4, profile_picture_url=$5 WHERE user_id=$6 RETURNING *",
       [name, username, email, phone_number, profilePic, id]
     )

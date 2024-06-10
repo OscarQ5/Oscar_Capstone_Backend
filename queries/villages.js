@@ -11,69 +11,47 @@ const generateVillageCode = () => {
 };
 
 const createVillage = async (village_name, creator_id) => {
-  try {
-    const village_code = generateVillageCode();
-    const village = await db.one(
-      "INSERT INTO villages (village_name, village_code, creator_id) VALUES ($1, $2, $3) RETURNING *",
-      [village_name, village_code, creator_id]
-    );
-    return village;
-  } catch (err) {
-    return err;
-  }
+  const village_code = generateVillageCode();
+  const village = await db.oneOrNone(
+    "INSERT INTO villages (village_name, village_code, creator_id) VALUES ($1, $2, $3) RETURNING *",
+    [village_name, village_code, creator_id]
+  )
+  return village
 };
 
 const getVillage = async (village_id) => {
-  try {
-    const village = await db.oneOrNone(
-      "SELECT * FROM villages WHERE village_id=$1",
-      village_id
-    );
-    return village;
-  } catch (err) {
-    return err;
-  }
+  const village = await db.oneOrNone(
+    "SELECT * FROM villages WHERE village_id=$1",
+    village_id
+  )
+  return village
 };
 
 const getAllVillages = async () => {
-  try {
-    const allVillages = await db.any("SELECT * FROM villages");
-    return allVillages
-  } catch (err) {
-    return err
-  }
+  const allVillages = await db.any("SELECT * FROM villages")
+  return allVillages
 }
 
 const getVillages = async (user_id) => {
-  try {
-    const villages = await db.any(
-      "SELECT DISTINCT v.* FROM villages v LEFT JOIN village_users vu ON v.village_id = vu.village_id WHERE vu.user_id = $1 OR v.creator_id = $1",
-      user_id
-    );
-    return villages;
-  } catch (err) {
-    return err;
-  }
+  const villages = await db.any(
+    "SELECT DISTINCT v.* FROM villages v LEFT JOIN village_users vu ON v.village_id = vu.village_id WHERE vu.user_id = $1 OR v.creator_id = $1",
+    user_id
+  )
+  return villages
 };
 
 const updateVillage = async (village_id, village_name) => {
-  try {
-    await db.none("UPDATE villages SET village_name=$1 WHERE village_id=$2", [
-      village_name,
-      village_id,
-    ]);
-  } catch (err) {
-    return err;
-  }
+  const updatedVillage = await db.oneOrNone("UPDATE villages SET village_name=$1 WHERE village_id=$2 RETURNING *", [
+    village_name,
+    village_id,
+  ])
+  return updatedVillage
 };
 
 const deleteVillage = async (village_id) => {
-  try {
-    await db.none('DELETE FROM village_users WHERE village_id=$1', village_id)
-    await db.none("DELETE FROM villages WHERE village_id=$1", village_id);
-  } catch (err) {
-    return err;
-  }
+  const deletedVillageUsers = await db.oneOrNone('DELETE FROM village_users WHERE village_id=$1 RETURNING *', village_id)
+  const deletedVillage = await db.oneOrNone("DELETE FROM villages WHERE village_id=$1 RETURNING *", village_id)
+  return deletedVillageUsers, deletedVillage
 };
 
 module.exports = {

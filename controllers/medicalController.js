@@ -17,29 +17,22 @@ medical.get("/", async (req, res) => {
     const userMedical = await getMedicals(user_id);
     res.status(200).json(userMedical);
   } catch (err) {
-    res.status(404).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
-//SHOW
 medical.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const { user_id } = req.user;
     const medical = await getMedical(id, user_id);
-    if (!medical)
-      return res
-        .status(404)
-        .json({
-          error: "Medical record not found or does not belong to the user",
-        });
+    if (!medical) return res.status(404).json({ error: "Medical record not found or does not belong to the user", });
     res.status(200).json(medical);
   } catch (err) {
-    res.status(404).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
-//POST
 medical.post("/", async (req, res) => {
   try {
     const { medical_history, blood_type, allergies, medication } = req.body;
@@ -53,38 +46,43 @@ medical.post("/", async (req, res) => {
     });
     res.status(201).json(medical);
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-//UPDATE
 medical.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { medical_history, blood_type, allergies, medication } = req.body;
   try {
-    await updateMedical(id, {
+    const { user_id } = req.user;
+    const medical = await getMedical(id, user_id);
+    if (!medical) {
+      return res.status(404).json({ error: "Medical record not found or does not belong to the user" });
+    }
+    const updatedMedical = await updateMedical(id, {
       medical_history,
       blood_type,
       allergies,
       medication,
     });
-    res.status(200).json({ message: "Medical record updated successfully" });
+    res.status(200).json({ updatedMedical });
   } catch (err) {
-    res.status(404).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE
 medical.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedMedical = await deleteMedical(id);
-    if (!deletedMedical) {
-      return res.status(404).json({ error: "Medical record not found" });
+    const { user_id } = req.user;
+    const medical = await getMedical(id, user_id);
+    if (!medical) {
+      return res.status(404).json({ error: "Medical record not found or does not belong to the user" });
     }
-    res.status(200).json({ message: "Medical record deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    const deletedMedical = await deleteMedical(id);
+    res.status(200).json({ deletedMedical });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

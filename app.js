@@ -19,25 +19,26 @@ app.get("/", (req, res) => {
 
 app.post('/sendSMS', async (req, res) => {
   const { to, message } = req.body
+  const from = '+18442507058'
   try {
     if (Array.isArray(to)) {
       for (const phoneNumber of to) {
         const response = await client.messages.create({
           body: message,
-          from: '+18442507058',
+          from: from,
           to: phoneNumber
         })
       }
     } else {
       const response = await client.messages.create({
         body: message,
-        from: '+18442507058',
+        from: from,
         to: to
       })
     }
-    return true
-  } catch (error) {
-    throw error
+    res.status(200).json({ message: 'Message(s) sent successfully' })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
   }
 })
 

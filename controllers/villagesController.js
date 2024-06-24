@@ -25,7 +25,7 @@ villages.post("/", checkDuplicateVillage, async (req, res) => {
     newVillage.creator = creator;
     res.status(201).json(newVillage);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -39,7 +39,7 @@ villages.get("/village/:id", async (req, res) => {
     }
     res.status(200).json(village);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -49,7 +49,7 @@ villages.get("/", async (req, res) => {
     const userVillages = await getVillages(user_id);
     res.status(200).json(userVillages);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.messages });
   }
 });
 
@@ -58,7 +58,7 @@ villages.get("/allvillages", async (req, res) => {
     const allVillages = await getAllVillages()
     res.status(200).json(allVillages);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -66,21 +66,29 @@ villages.put("/:id", checkAdminStatus, async (req, res) => {
   const { id } = req.params;
   const { village_name } = req.body;
   try {
+    const village = await getVillage(id);
+    if (!village) {
+      return res.status(404).json({ error: "Village not found" });
+    }
     await updateVillage(id, village_name);
     const updatedVillage = await getVillage(id);
     res.status(200).json(updatedVillage);
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 
 villages.delete("/:id", checkAdminStatus, async (req, res) => {
   try {
     const { id } = req.params;
-    await deleteVillage(id);
-    res.status(200).json({ message: "Village deleted successfully" });
+    const village = await getVillage(id);
+    if (!village) {
+      return res.status(404).json({ error: "Village not found" });
+    }
+    const deletedVillage = await deleteVillage(id);
+    res.status(200).json({ deletedVillage });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 });
 

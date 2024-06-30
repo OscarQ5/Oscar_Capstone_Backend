@@ -24,6 +24,8 @@ CREATE TABLE contacts (
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE INDEX id_contacts_user_id ON contacts(user_id);
+
 CREATE TABLE medical (
     medical_id SERIAL PRIMARY KEY,
     medical_history VARCHAR(255) NOT NULL,
@@ -31,8 +33,10 @@ CREATE TABLE medical (
     allergies VARCHAR(225) NOT NULL,
     medication VARCHAR(255),
     user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    last_updated TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX id_medical_user_id ON medical(user_id);
 
 CREATE TABLE villages (
     village_id SERIAL PRIMARY KEY,
@@ -41,25 +45,34 @@ CREATE TABLE villages (
     creator_id INT REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE INDEX id_villages_creator_id ON villages(creator_id);
+
 CREATE TABLE village_users (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     village_id INT NOT NULL,
-    is_admin BOOLEAN NOT NULL DEFAULT false,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
-    CONSTRAINT fk_village FOREIGN KEY (village_id) REFERENCES villages(village_id),
-    CONSTRAINT unique_user_village UNIQUE (user_id, village_id)
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+    UNIQUE (user_id, village_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (village_id) REFERENCES villages(village_id)
 );
+
+CREATE INDEX id_village_users_user_id ON village_users(user_id);
+CREATE INDEX id_village_users_village_id ON village_users(village_id);
 
 CREATE TABLE village_join_requests (
     request_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
     village_id INT NOT NULL,
-    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    request_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     is_accepted BOOLEAN DEFAULT FALSE,
     admin_id INT, 
-    reviewed_date TIMESTAMP, 
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(user_id),
-    CONSTRAINT fk_village FOREIGN KEY (village_id) REFERENCES villages(village_id),
-    CONSTRAINT fk_admin FOREIGN KEY (admin_id) REFERENCES users(user_id)
+    reviewed_date TIMESTAMPTZ, 
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (village_id) REFERENCES villages(village_id),
+    FOREIGN KEY (admin_id) REFERENCES users(user_id)
 );
+
+CREATE INDEX idx_village_join_requests_user_id ON village_join_requests(user_id);
+CREATE INDEX idx_village_join_requests_village_id ON village_join_requests(village_id);
+CREATE INDEX idx_village_join_requests_admin_id ON village_join_requests(admin_id);
